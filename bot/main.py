@@ -24,10 +24,11 @@ from .why import router as why_router
 from .period_view import router as period_router
 from .ics import router as ics_router
 from .month_pdf import router as pdf30_router
+from .varsha import router as varsha_router
 
 log = logging.getLogger("main")
 MIGRATIONS = Path(__file__).resolve().parent.parent / "migrations"
-COMMANDS = ["forecast", "today", "week", "month", "personal", "compat", "calendar", "transits", "ics", "pdf30", "chart", "glossary", "premium", "me",
+COMMANDS = ["forecast", "today", "week", "month", "personal", "compat", "calendar", "transits", "ics", "pdf30", "chart", "varsha", "glossary", "premium", "me",
             "settings", "help"]
 
 
@@ -57,6 +58,7 @@ async def main():
     dp.include_router(period_router)
     dp.include_router(ics_router)
     dp.include_router(pdf30_router)
+    dp.include_router(varsha_router)
     for code, lang in ((None, "en"), ("ru", "ru")):     # по умолчанию английский, для ru — русский
         await bot.set_my_commands([BotCommand(command=c, description=t(lang, f"cmd_{c}")) for c in COMMANDS],
                                   language_code=code)

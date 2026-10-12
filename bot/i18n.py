@@ -249,6 +249,7 @@ M: dict[str, dict[str, str]] = {
     "kb_pdf30": {"ru": "📄 PDF на 30 дней", "en": "📄 30-day PDF"},
     "feat_pdf30": {"ru": "Персональный прогноз на 30 дней (PDF)", "en": "Personal 30-day forecast (PDF)"},
     "pdf30_caption": {"ru": "📄 Ваш прогноз на 30 дней · Кай Тара", "en": "📄 Your 30-day forecast · Kai Tara"},
+    "cmd_varsha": {"ru": "Прогноз на год — Варшапхала (PDF)", "en": "Annual forecast — Varshaphala (PDF)"},
     "cmd_pdf30": {"ru": "Прогноз на 30 дней (PDF)", "en": "30-day forecast (PDF)"},
     "kb_week": {"ru": "📆 7 дней", "en": "📆 7 days"},
     "kb_month": {"ru": "🗓 Месяц", "en": "🗓 Month"},
@@ -382,6 +383,14 @@ M: dict[str, dict[str, str]] = {
                              "Постройте карту заново: /chart",
                        "en": "The chart data has already been wiped from memory — I keep it for 30 minutes at most. "
                              "Please build the chart again: /chart"},
+    "kb_varsha": {"ru": "🎂 Прогноз на год (PDF)", "en": "🎂 Year ahead (PDF)"},
+    "feat_varsha": {"ru": "Годовой прогноз — Варшапхала (PDF)", "en": "Annual forecast — Varshaphala (PDF)"},
+    "varsha_caption": {"ru": "🎂 Ваш годовой прогноз (Варшапхала) · Кай Тара",
+                       "en": "🎂 Your annual forecast (Varshaphala) · Kai Tara"},
+    "varsha_need_chart": {"ru": "Для прогноза на год нужны дата, время и место рождения — я их не храню. "
+                                "Постройте карту: /chart, а затем нажмите «🎂 Прогноз на год».",
+                          "en": "The annual forecast needs your birth date, time and place — I don't store them. "
+                                "Build your chart with /chart, then tap “🎂 Year ahead”."},
     "report_making": {"ru": "Готовлю разбор…", "en": "Preparing your reading…"},
     "report_caption": {"ru": "📄 Разбор натальной карты · Кай Тара", "en": "📄 Birth chart reading · Kai Tara"},
     "report_pending": {"ru": "Оплата получена. Постройте карту (/chart) — разбор придёт сразу после неё.",

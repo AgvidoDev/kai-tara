@@ -65,7 +65,9 @@ def report_free(u, cfg: Config) -> bool:
 def report_keyboard(u, cfg: Config, lang: str) -> InlineKeyboardMarkup:
     free = report_free(u, cfg) or (u and u["report_credits"] > 0)
     text = t(lang, "kb_report_free") if free else t(lang, "kb_report_paid", price=cfg.price_report)
-    return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text=text, callback_data="rep:get")]])
+    from .varsha import varsha_button
+    return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text=text, callback_data="rep:get")],
+                                                 [varsha_button(lang)]])
 
 
 async def send_report(m: Message, state: FSMContext, chart: dict, lang: str) -> None:
