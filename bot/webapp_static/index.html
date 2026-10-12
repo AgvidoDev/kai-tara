@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Kai Tara</title>
+  <link rel="stylesheet" href="/static/app.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <header id="top">
+    <div id="title">Kai Tara</div>
+    <div id="subject" hidden><span id="subject-name"></span><button id="subject-reset" type="button"></button></div>
+  </header>
+  <main id="view" aria-live="polite"></main>
+  <nav id="tabs">
+    <button data-tab="today" type="button"><span>☀️</span><b data-i18n="today"></b></button>
+    <button data-tab="week" type="button"><span>📆</span><b data-i18n="week"></b></button>
+    <button data-tab="month" type="button"><span>🗓</span><b data-i18n="month"></b></button>
+    <button data-tab="family" type="button"><span>👨‍👩‍👧</span><b data-i18n="family"></b></button>
+    <button data-tab="me" type="button"><span>🪐</span><b data-i18n="me"></b></button>
+  </nav>
+  <script src="/static/app.js"></script>
+</body>
+</html>

@@ -26,6 +26,7 @@ from .ics import router as ics_router
 from .month_pdf import router as pdf30_router
 from .varsha import router as varsha_router
 from .relatives import router as relatives_router
+from .app_entry import router as app_router
 
 log = logging.getLogger("main")
 MIGRATIONS = Path(__file__).resolve().parent.parent / "migrations"
@@ -38,6 +39,8 @@ async def main():
     cfg = config.load()
     kb.SHOW_PREMIUM = not cfg.free_mode
     commands = [c for c in COMMANDS if not (cfg.free_mode and c == "premium")]
+    if cfg.webapp_url:
+        commands.insert(0, "app")
     repo = await Repo.create(cfg.dsn, cfg.fernet_key)
     applied = await repo.migrate(str(MIGRATIONS))
     if applied:
@@ -63,9 +66,17 @@ async def main():
     dp.include_router(pdf30_router)
     dp.include_router(varsha_router)
     dp.include_router(relatives_router)
+    dp.include_router(app_router)
     for code, lang in ((None, "en"), ("ru", "ru")):     # по умолчанию английский, для ru — русский
         await bot.set_my_commands([BotCommand(command=c, description=t(lang, f"cmd_{c}")) for c in commands],
                                   language_code=code)
+    if cfg.webapp_url:                     # Mini App: веб-сервер за nginx и кнопка меню в чате
+        from aiogram.types import MenuButtonWebApp, WebAppInfo
+
+        from .webapp import start as start_webapp
+        await start_webapp(repo, cfg)
+        await bot.set_chat_menu_button(menu_button=MenuButtonWebApp(
+            text="Kai Tara", web_app=WebAppInfo(url=cfg.webapp_url + "/")))
     asyncio.create_task(scheduler(bot, repo, cfg))
     asyncio.create_task(storage.sweeper())
     from jyotish import geo

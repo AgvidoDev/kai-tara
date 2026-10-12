@@ -31,6 +31,8 @@ class Config:
     free_until: date | None = None      # промо: до этой даты включительно Премиум бесплатен всем
     free_mode: bool = False             # бесплатный продукт без срока: оплата выключена полностью
     source_url: str = ""                # публичный репозиторий кода (AGPL-3.0): команда /source
+    webapp_url: str = ""                # адрес Mini App (https://…); пусто — Mini App выключен
+    webapp_port: int = 8111             # локальный порт веб-сервера Mini App (за nginx)
 
     @property
     def promo_active(self) -> bool:
@@ -71,4 +73,6 @@ def load() -> Config:
         free_until=date.fromisoformat(os.environ["FREE_UNTIL"]) if os.environ.get("FREE_UNTIL") else None,
         free_mode=os.environ.get("FREE_MODE", "").strip().lower() in ("1", "true", "yes", "on"),
         source_url=os.environ.get("SOURCE_URL", "").strip(),
+        webapp_url=os.environ.get("WEBAPP_URL", "").strip().rstrip("/"),
+        webapp_port=int(os.environ.get("WEBAPP_PORT", 8111)),
     )

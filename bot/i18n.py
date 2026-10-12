@@ -253,6 +253,13 @@ M: dict[str, dict[str, str]] = {
     "feat_pdf30": {"ru": "Персональный прогноз на 30 дней (PDF)", "en": "Personal 30-day forecast (PDF)"},
     "pdf30_caption": {"ru": "📄 Ваш прогноз на 30 дней · Кай Тара", "en": "📄 Your 30-day forecast · Kai Tara"},
     "cmd_varsha": {"ru": "Прогноз на год — Варшапхала (PDF)", "en": "Annual forecast — Varshaphala (PDF)"},
+    "cmd_app": {"ru": "Открыть приложение Kai Tara", "en": "Open the Kai Tara app"},
+    "kb_open_app": {"ru": "📱 Открыть приложение", "en": "📱 Open the app"},
+    "app_intro": {"ru": "📱 <b>Приложение Kai Tara</b> — ваш день, неделя, месяц, близкие и профиль на одном "
+                        "экране. Открывается прямо в Telegram.",
+                  "en": "📱 <b>The Kai Tara app</b> — your day, week, month, family and profile on one screen. "
+                        "It opens right inside Telegram."},
+    "app_off": {"ru": "Приложение пока недоступно.", "en": "The app is not available yet."},
     "cmd_family": {"ru": "Близкие: профили родных и друзей", "en": "Family: profiles of loved ones"},
     "cmd_pdf30": {"ru": "Прогноз на 30 дней (PDF)", "en": "30-day forecast (PDF)"},
     "kb_week": {"ru": "📆 7 дней", "en": "📆 7 days"},
