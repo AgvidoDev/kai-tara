@@ -115,6 +115,7 @@ async def tg(repo):
     from bot.ics import router as ics_router
     from bot.month_pdf import router as pdf30_router
     from bot.varsha import router as varsha_router
+    from bot.relatives import router as relatives_router
 
     fake = FakeSession()
     bot = Bot("42:" + "A" * 35, session=fake.session, default=DefaultBotProperties(parse_mode="HTML"))
@@ -128,7 +129,7 @@ async def tg(repo):
     from bot.lang import LangMiddleware, _cache
     _cache.clear()
     dp.update.outer_middleware(LangMiddleware())
-    for r in (setup_admin(cfg.admin_ids), payments_router, router, features_router, transits_router, report_router, why_router, period_router, ics_router, pdf30_router, varsha_router):
+    for r in (setup_admin(cfg.admin_ids), payments_router, router, features_router, transits_router, report_router, why_router, period_router, ics_router, pdf30_router, varsha_router, relatives_router):
         r._parent_router = None   # роутеры — модульные синглтоны, отвязываем от прошлого теста
         dp.include_router(r)
     yield dp, bot, fake, cfg

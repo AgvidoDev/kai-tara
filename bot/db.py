@@ -80,8 +80,10 @@ class Repo:
     async def load_profile(self, tg_id: int) -> AstroProfile | None:
         r = await self.pool.fetchrow(
             """SELECT b.* FROM profiles b JOIN users u ON u.id = b.user_id WHERE u.tg_id = $1""", tg_id)
-        if not r:
-            return None
+        return self._row_profile(r) if r else None
+
+    @staticmethod
+    def _row_profile(r) -> AstroProfile:
         pr = r["planet_rashi"] or []
         moon = r["moon_rashi"]
         return AstroProfile(
@@ -90,6 +92,38 @@ class Repo:
             moon_nakshatra=r["moon_nakshatra"], moon_pada=r["moon_pada"], moon_first_half=r["moon_first_half"],
             lagna_rashi=r["lagna_rashi"], planet_rashi=dict(zip(PLANET_ORDER, pr)),
             dashas=AstroProfile.dashas_from_json(json.loads(r["dashas"]) if r["dashas"] else []))
+
+    # --------------------------------------------------------- близкие
+    async def add_relative(self, tg_id: int, name: str, p: AstroProfile, limit: int = 10) -> int | None:
+        """Сохраняет профиль близкого. None — достигнут лимит."""
+        uid = (await self.ensure_user(tg_id))["id"]
+        async with self.pool.acquire() as con, con.transaction():
+            await con.execute("SELECT 1 FROM users WHERE id = $1 FOR UPDATE", uid)
+            if await con.fetchval("SELECT count(*) FROM relatives WHERE user_id = $1", uid) >= limit:
+                return None
+            return await con.fetchval(
+                """INSERT INTO relatives (user_id, name, time_known, moon_rashi, sun_sid_rashi, sun_trop_sign,
+                       lagna_rashi, moon_nakshatra, moon_pada, moon_first_half, planet_rashi, dashas)
+                   VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING id""",
+                uid, name, *self._profile_args(p))
+
+    async def relatives(self, tg_id: int) -> list[tuple[int, str]]:
+        rows = await self.pool.fetch(
+            """SELECT r.id, r.name FROM relatives r JOIN users u ON u.id = r.user_id
+               WHERE u.tg_id = $1 ORDER BY r.id""", tg_id)
+        return [(r["id"], r["name"]) for r in rows]
+
+    async def get_relative(self, tg_id: int, rel_id: int) -> tuple[str, AstroProfile] | None:
+        r = await self.pool.fetchrow(
+            """SELECT r.* FROM relatives r JOIN users u ON u.id = r.user_id
+               WHERE u.tg_id = $1 AND r.id = $2""", tg_id, rel_id)
+        return (r["name"], self._row_profile(r)) if r else None
+
+    async def delete_relative(self, tg_id: int, rel_id: int) -> bool:
+        res = await self.pool.execute(
+            """DELETE FROM relatives r USING users u WHERE u.id = r.user_id AND u.tg_id = $1 AND r.id = $2""",
+            tg_id, rel_id)
+        return res.endswith(" 1")
 
     # --------------------------------------------------------- forecasts
     async def save_run(self, kind: str, event_at: datetime, period_end: datetime, city_key: str,

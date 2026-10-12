@@ -33,6 +33,7 @@ M: dict[str, dict[str, str]] = {
     "btn_compat": {"ru": "💞 Совместимость", "en": "💞 Compatibility"},
     "btn_calendar": {"ru": "📅 Календарь", "en": "📅 Calendar"},
     "btn_premium": {"ru": "💎 Премиум", "en": "💎 Premium"},
+    "btn_family": {"ru": "👨‍👩‍👧 Близкие", "en": "👨‍👩‍👧 Family"},
     "btn_profile": {"ru": "🪐 Моя карта", "en": "🪐 My chart"},
     "btn_settings": {"ru": "⚙️ Настройки", "en": "⚙️ Settings"},
     # ------------------------------------------------------------ инлайн-кнопки
@@ -151,7 +152,8 @@ M: dict[str, dict[str, str]] = {
               "/week — 7 дней, /month — месяц 💎\n"
               "/personal — личный прогноз (даши, транзиты, упаи) 💎\n/calendar — благоприятные дни 💎\n"
               "/compat — совместимость пары\n/transits — большие транзиты (узлы, Юпитер, Сатурн)\n"
-              "/chart — натальная карта (картинка и планеты)\n/glossary — словарь терминов\n/me — моя карта\n"
+              "/chart — натальная карта (картинка и планеты)\n/varsha — прогноз на год (после /chart) 💎\n"
+              "/family — близкие: профили родных и друзей 💎\n/glossary — словарь терминов\n/me — моя карта\n"
               "/premium — Премиум и приглашения\n/settings — режим знака, город, язык, рассылка, удаление данных\n"
               "/terms — условия, /privacy — конфиденциальность, /source — исходный код\n\n"
               "Любое подчёркнутое слово в прогнозе можно нажать — я объясню, что оно значит.",
@@ -159,7 +161,8 @@ M: dict[str, dict[str, str]] = {
               "/week — 7 days, /month — month 💎\n"
               "/personal — personal forecast (dashas, transits, upayas) 💎\n/calendar — favourable days 💎\n"
               "/compat — couple compatibility\n/transits — major transits (nodes, Jupiter, Saturn)\n"
-              "/chart — birth chart (image and planets)\n/glossary — glossary of terms\n/me — my chart\n"
+              "/chart — birth chart (image and planets)\n/varsha — year ahead (after /chart) 💎\n"
+              "/family — profiles of family and friends 💎\n/glossary — glossary of terms\n/me — my chart\n"
               "/premium — Premium and invitations\n/settings — sign mode, city, language, messages, delete data\n"
               "/terms — terms, /privacy — privacy, /source — source code\n\n"
               "Tap any underlined word in a forecast and I'll explain what it means.",
@@ -250,6 +253,7 @@ M: dict[str, dict[str, str]] = {
     "feat_pdf30": {"ru": "Персональный прогноз на 30 дней (PDF)", "en": "Personal 30-day forecast (PDF)"},
     "pdf30_caption": {"ru": "📄 Ваш прогноз на 30 дней · Кай Тара", "en": "📄 Your 30-day forecast · Kai Tara"},
     "cmd_varsha": {"ru": "Прогноз на год — Варшапхала (PDF)", "en": "Annual forecast — Varshaphala (PDF)"},
+    "cmd_family": {"ru": "Близкие: профили родных и друзей", "en": "Family: profiles of loved ones"},
     "cmd_pdf30": {"ru": "Прогноз на 30 дней (PDF)", "en": "30-day forecast (PDF)"},
     "kb_week": {"ru": "📆 7 дней", "en": "📆 7 days"},
     "kb_month": {"ru": "🗓 Месяц", "en": "🗓 Month"},
@@ -338,7 +342,7 @@ M: dict[str, dict[str, str]] = {
               "<b>Чего я не храню:</b> дату, время и место рождения — они используются только в момент расчёта "
               "и в базу не записываются. Для натальной карты они держатся в оперативной памяти бота не дольше "
               "30 минут (чтобы успеть получить PDF-разбор), затем стираются. Данные партнёра для совместимости "
-              "не сохраняются.\n"
+              "не сохраняются. Для близких, которых вы добавили, храню только имя и такой же астропрофиль.\n"
               "<b>Зачем:</b> чтобы присылать прогнозы и рассылки, которые вы выбрали.\n"
               "<b>Где:</b> на сервере в ЕС. Данные никому не передаются и не продаются.\n"
               "<b>Ваши права:</b> удалить все данные можно в любой момент: ⚙️ Настройки → Удалить мои данные. "
@@ -350,7 +354,8 @@ M: dict[str, dict[str, str]] = {
               "<b>What I don't store:</b> your date, time and place of birth — they are used only at the moment of "
               "calculation and never written to the database. For a birth chart they stay in the bot's working "
               "memory for at most 30 minutes (so you can get the PDF reading), then they are wiped. Your partner's "
-              "data for compatibility is not stored.\n"
+              "data for compatibility is not stored. For family members you add, I keep only a name and the same "
+              "astro profile.\n"
               "<b>Why:</b> to send you the forecasts and messages you chose.\n"
               "<b>Where:</b> on a server in the EU. Data is never shared or sold.\n"
               "<b>Your rights:</b> you can delete all your data at any time: ⚙️ Settings → Delete my data. "
@@ -383,6 +388,44 @@ M: dict[str, dict[str, str]] = {
                              "Постройте карту заново: /chart",
                        "en": "The chart data has already been wiped from memory — I keep it for 30 minutes at most. "
                              "Please build the chart again: /chart"},
+    # ------------------------------------------------------------ близкие
+    "feat_relatives": {"ru": "Профили близких", "en": "Family profiles"},
+    "rel_empty": {"ru": "👨‍👩‍👧 <b>Близкие</b>\n\nДобавьте родных и друзей — для каждого покажу день по его Луне, "
+                        "текущую дашу и совместимость с вами.\n\nЯ сохраняю только имя и астропрофиль (знаки, "
+                        "накшатра, даши), а дату, время и место рождения сразу стираю. Добавляйте человека с его "
+                        "согласия.",
+                  "en": "👨‍👩‍👧 <b>Family</b>\n\nAdd relatives and friends — for each I'll show the day by their "
+                        "Moon, the current dasha and compatibility with you.\n\nI keep only the name and the astro "
+                        "profile (signs, nakshatra, dashas); the birth date, time and place are erased right away. "
+                        "Please add people with their consent."},
+    "rel_list": {"ru": "👨‍👩‍👧 <b>Близкие</b> — выберите человека:", "en": "👨‍👩‍👧 <b>Family</b> — choose a person:"},
+    "kb_rel_add": {"ru": "➕ Добавить", "en": "➕ Add"},
+    "rel_ask_name": {"ru": "Как подписать профиль? Например: Мама, Саша, сын.",
+                     "en": "What should I call this profile? For example: Mom, Alex, son."},
+    "rel_bad_name": {"ru": "Имя — от 1 до {n} символов, без «/» в начале. Попробуйте ещё раз.",
+                     "en": "The name must be 1 to {n} characters and not start with “/”. Please try again."},
+    "rel_ask_date": {"ru": "Дата рождения ({name}) в формате ДД.ММ.ГГГГ:",
+                     "en": "Date of birth ({name}) as DD.MM.YYYY:"},
+    "rel_ask_time": {"ru": "Время рождения (ЧЧ:ММ), если известно:", "en": "Time of birth (HH:MM), if known:"},
+    "rel_ask_place": {"ru": "Место рождения — выберите или напишите город:",
+                      "en": "Place of birth — choose or type a city:"},
+    "rel_saved": {"ru": "✅ Профиль «{name}» сохранён. Дата, время и место рождения стёрты.",
+                  "en": "✅ Profile “{name}” saved. The birth date, time and place have been erased."},
+    "rel_limit": {"ru": "Можно сохранить до {n} профилей. Удалите ненужный, чтобы добавить новый.",
+                  "en": "You can keep up to {n} profiles. Delete one to add another."},
+    "rel_not_found": {"ru": "Профиль не найден — возможно, он уже удалён.",
+                      "en": "Profile not found — it may have been deleted."},
+    "rel_no_time": {"ru": "<i>Время рождения не указано: лагны и даш нет, Луна — на полдень.</i>",
+                    "en": "<i>No birth time: no lagna or dashas, the Moon is taken at noon.</i>"},
+    "kb_rel_day": {"ru": "☀️ Сегодня", "en": "☀️ Today"},
+    "kb_rel_compat": {"ru": "💞 Совместимость", "en": "💞 Compatibility"},
+    "kb_rel_del": {"ru": "🗑 Удалить", "en": "🗑 Delete"},
+    "kb_rel_back": {"ru": "⬅️ Все близкие", "en": "⬅️ All profiles"},
+    "rel_compat_who": {"ru": "Для ашта-куты важны роли. Кто вы?", "en": "Ashta-kuta needs the roles. Who are you?"},
+    "rel_compat_need_moon": {"ru": "Для совместимости нужна точная Луна у обоих — укажите время рождения.",
+                             "en": "Compatibility needs an exact Moon for both — a birth time is required."},
+    "rel_del_confirm": {"ru": "Удалить этот профиль?", "en": "Delete this profile?"},
+    "rel_deleted": {"ru": "🗑 Профиль удалён.", "en": "🗑 Profile deleted."},
     "kb_varsha": {"ru": "🎂 Прогноз на год (PDF)", "en": "🎂 Year ahead (PDF)"},
     "feat_varsha": {"ru": "Годовой прогноз — Варшапхала (PDF)", "en": "Annual forecast — Varshaphala (PDF)"},
     "varsha_caption": {"ru": "🎂 Ваш годовой прогноз (Варшапхала) · Кай Тара",

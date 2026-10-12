@@ -14,16 +14,19 @@ BTN_TODAY = variants("btn_today")
 BTN_COMPAT = variants("btn_compat")
 BTN_CALENDAR = variants("btn_calendar")
 BTN_PREMIUM = variants("btn_premium")
+BTN_FAMILY = variants("btn_family")
+SHOW_PREMIUM = True          # в бесплатном режиме (FREE_MODE) кнопки «Премиум» в меню нет
 
 remove = ReplyKeyboardRemove()
 
 
 def main_menu(lang: str) -> ReplyKeyboardMarkup:
     b = lambda k: KeyboardButton(text=t(lang, k))  # noqa: E731
+    last = [b("btn_profile"), b("btn_premium"), b("btn_settings")] if SHOW_PREMIUM else         [b("btn_profile"), b("btn_settings")]
     return ReplyKeyboardMarkup(keyboard=[[b("btn_forecast"), b("btn_today")],
                                          [b("btn_personal"), b("btn_compat")],
-                                         [b("btn_calendar"), b("btn_premium")],
-                                         [b("btn_profile"), b("btn_settings")]], resize_keyboard=True)
+                                         [b("btn_calendar"), b("btn_family")],
+                                         last], resize_keyboard=True)
 
 
 def _inline(rows) -> InlineKeyboardMarkup:

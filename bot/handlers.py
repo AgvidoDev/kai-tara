@@ -367,5 +367,8 @@ async def source(m: Message, cfg: Config, lang: str):
 
 
 @router.message(Command("help"))
-async def help_(m: Message, lang: str):
-    await m.answer(t(lang, "help"))
+async def help_(m: Message, lang: str, cfg: Config):
+    text = t(lang, "help")
+    if cfg.free_mode:                        # бесплатный продукт: без Премиума и значков 💎
+        text = "\n".join(x for x in text.split("\n") if not x.startswith("/premium")).replace(" 💎", "")
+    await m.answer(text)

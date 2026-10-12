@@ -182,12 +182,13 @@ def daily_personal(d, s: Settings, natal_moon_rashi: int | None, natal_nak: int 
     return personal_day(day_info(d, s), natal_moon_rashi, natal_nak)
 
 
-def render_daily(p: PersonalDay, full: bool, lang: str = "ru", city_key: str | None = None) -> str:
+def render_daily(p: PersonalDay, full: bool, lang: str = "ru", city_key: str | None = None,
+                 who: str | None = None) -> str:
     en = lang == "en"
     i = p.info
     place = city_name(city_key, lang) if city_key else i.location
     out = [f"☀️ <b>{'Today' if en else 'Сегодня'}, {fmt_date(i.day, lang)}</b> ({escape(place)})",
-           f"{'Your day' if en else 'Ваш день'}: {p.icon} <b>{p.tone_text(lang)}</b>", ""]
+           f"{(escape(who) if who else 'Your day' if en else 'Ваш день')}: {p.icon} <b>{p.tone_text(lang)}</b>", ""]
     out += describe_sky(i, lang)
     out += [f"✨ {x}" for x in special_text(i, lang)]
     if not full:

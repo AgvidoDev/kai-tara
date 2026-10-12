@@ -8,7 +8,7 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.types import BotCommand
 
-from . import config, glossary
+from . import config, glossary, keyboards as kb
 from .branding import apply_branding
 from .i18n import t
 from .lang import LangMiddleware
@@ -25,16 +25,19 @@ from .period_view import router as period_router
 from .ics import router as ics_router
 from .month_pdf import router as pdf30_router
 from .varsha import router as varsha_router
+from .relatives import router as relatives_router
 
 log = logging.getLogger("main")
 MIGRATIONS = Path(__file__).resolve().parent.parent / "migrations"
-COMMANDS = ["forecast", "today", "week", "month", "personal", "compat", "calendar", "transits", "ics", "pdf30", "chart", "varsha", "glossary", "premium", "me",
+COMMANDS = ["forecast", "today", "week", "month", "personal", "compat", "calendar", "transits", "ics", "pdf30", "chart", "varsha", "family", "glossary", "premium", "me",
             "settings", "help"]
 
 
 async def main():
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s %(message)s")
     cfg = config.load()
+    kb.SHOW_PREMIUM = not cfg.free_mode
+    commands = [c for c in COMMANDS if not (cfg.free_mode and c == "premium")]
     repo = await Repo.create(cfg.dsn, cfg.fernet_key)
     applied = await repo.migrate(str(MIGRATIONS))
     if applied:
@@ -59,8 +62,9 @@ async def main():
     dp.include_router(ics_router)
     dp.include_router(pdf30_router)
     dp.include_router(varsha_router)
+    dp.include_router(relatives_router)
     for code, lang in ((None, "en"), ("ru", "ru")):     # по умолчанию английский, для ru — русский
-        await bot.set_my_commands([BotCommand(command=c, description=t(lang, f"cmd_{c}")) for c in COMMANDS],
+        await bot.set_my_commands([BotCommand(command=c, description=t(lang, f"cmd_{c}")) for c in commands],
                                   language_code=code)
     asyncio.create_task(scheduler(bot, repo, cfg))
     asyncio.create_task(storage.sweeper())
