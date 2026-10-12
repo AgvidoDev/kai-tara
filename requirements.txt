@@ -1,0 +1,8 @@
+pyswisseph>=2.10
+aiogram>=3.20
+asyncpg>=0.29
+cryptography>=42
+timezonefinder>=6.5
+tzdata>=2024.1
+Pillow>=10.3
+reportlab>=4.0
